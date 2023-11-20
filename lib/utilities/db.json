@@ -1,0 +1,10 @@
+{
+    "id": "",
+    "names": "Rafael Uriel",
+    "last_names": "Rodriguez Torres",
+    "role": "admin",
+    "gender": "m",
+    "email": "res.user?.email",
+    "phone_number": "3313586555",
+    "created_at": "DateTime.now().toString()"
+}
