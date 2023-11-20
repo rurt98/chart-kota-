@@ -29,6 +29,7 @@ class User {
   String? names;
   RollType? role;
   Address? address;
+  String? rfc;
 
   User({
     this.uid,
@@ -41,6 +42,7 @@ class User {
     this.userName,
     this.role,
     this.address,
+    this.rfc,
   });
 
   User copyWith({
@@ -54,6 +56,7 @@ class User {
     RollType? role,
     Address? address,
     String? userName,
+    String? rfc,
   }) =>
       User(
         createdAt: createdAt ?? this.createdAt,
@@ -65,6 +68,7 @@ class User {
         role: role ?? this.role,
         address: address ?? this.address,
         userName: userName ?? this.userName,
+        rfc: rfc ?? this.rfc,
       );
 
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -91,6 +95,7 @@ class User {
         address:
             json["address"] == null ? null : Address.fromJson(json["address"]),
         userName: json['user_name'],
+        rfc: json['rfc'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -103,6 +108,7 @@ class User {
         if (role != null) "role": role!.name,
         if (address != null) "address": address?.toJson(),
         if (userName != null) "user_name": userName!,
+        if (rfc != null) 'rfc': rfc,
       };
 
   Map<String, dynamic> toDataTable() => {
@@ -113,6 +119,7 @@ class User {
         'role': role?.nombreEs ?? '-',
         'address': address?.toString() ?? '-',
         'userName': userName,
+        'rfc': rfc,
       };
 
   @override

@@ -23,7 +23,7 @@ enum PageMenu {
     Routes.purchasesRoute,
   ),
   products(
-    'Compras',
+    'Productos',
     Icons.inventory_outlined,
     Icons.inventory,
     Routes.productsRoute,
