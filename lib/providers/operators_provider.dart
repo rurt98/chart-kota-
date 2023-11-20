@@ -168,13 +168,14 @@ class OperatorsProvider with ChangeNotifier {
     try {
       await auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((res) {
+          .then((res) async {
         final dataTemp = data;
 
         dataTemp['email'] = res.user?.email;
         dataTemp['uid'] = res.user?.uid;
 
-        db.collection('users').doc(res.user?.uid).set(dataTemp);
+        await db.collection('users').doc(res.user?.uid).set(dataTemp);
+        obtenerLista(onError: onError);
       });
 
       loading = false;

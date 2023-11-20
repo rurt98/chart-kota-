@@ -174,10 +174,7 @@ class FormOperatorsWidgetState extends State<FormOperatorsWidget> {
   @override
   void initState() {
     edit = widget.user != null;
-    user = widget.user?.copyWith() ??
-        User(
-          address: Address(),
-        );
+    user = widget.user?.copyWith() ?? User();
 
     super.initState();
   }

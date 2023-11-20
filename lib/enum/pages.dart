@@ -8,43 +8,43 @@ enum PageMenu {
     'Home',
     Icons.home_outlined,
     Icons.home,
-    Routes.home,
+    Routes.homeRoute,
   ),
-  routes(
-    'Rutas',
+  sales(
+    'Ventas',
     Icons.alt_route_outlined,
     Icons.alt_route,
-    Routes.routes,
+    Routes.salesRoute,
   ),
-  clients(
-    'Clientes',
+  purchases(
+    'Compras',
     Icons.groups_outlined,
     Icons.groups,
-    Routes.clients,
+    Routes.purchasesRoute,
   ),
-  packages(
-    'Paquetes',
+  products(
+    'Compras',
     Icons.inventory_outlined,
     Icons.inventory,
-    Routes.packages,
-  ),
-  rates(
-    'Tarifas',
-    Icons.paid_outlined,
-    Icons.paid,
-    Routes.rates,
+    Routes.productsRoute,
   ),
   operators(
     'Operadores',
     Icons.group,
     Icons.group,
-    Routes.operators,
+    Routes.suppliersRoute,
   ),
-  vehicles(
-    'Vehículos',
+  suppliers(
+    'Proveedores',
+    Icons.paid_outlined,
+    Icons.paid,
+    Routes.operatorsRoute,
+  ),
+  vat(
+    'IVA',
     Icons.local_shipping_outlined,
     Icons.local_shipping,
-    Routes.vehicles,
+    Routes.vatRoute,
   );
 
   final String title;
@@ -58,12 +58,12 @@ enum PageMenu {
 extension PageMenuExtension on PageMenu {
   static List<PageMenu> get navigationBarrancoSoft => [
         PageMenu.home,
-        PageMenu.routes,
-        PageMenu.clients,
-        PageMenu.packages,
-        PageMenu.rates,
+        PageMenu.sales,
+        PageMenu.purchases,
+        PageMenu.products,
         PageMenu.operators,
-        PageMenu.vehicles,
+        PageMenu.suppliers,
+        PageMenu.vat,
       ];
 
   PageMenu? get baseRoute => PageMenu.values.firstWhereOrNull(

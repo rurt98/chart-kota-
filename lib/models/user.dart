@@ -11,8 +11,6 @@ enum GenderType {
 
 enum RollType {
   admin('Administrador'),
-  driver('Conductor'),
-  warehouseman('Encargado de almacén'),
   systemOperator('Operador');
 
   final String nombreEs;

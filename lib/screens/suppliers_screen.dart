@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class VehiculosScreen extends StatefulWidget {
-  const VehiculosScreen({super.key});
+class SuppliersScreen extends StatefulWidget {
+  const SuppliersScreen({super.key});
 
   @override
-  State<VehiculosScreen> createState() => _VehiculosScreenState();
+  State<SuppliersScreen> createState() => _SuppliersScreenState();
 }
 
-class _VehiculosScreenState extends State<VehiculosScreen> {
+class _SuppliersScreenState extends State<SuppliersScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(

@@ -8,15 +8,15 @@ import 'package:final_project_ba_char/layout/dashboard_layout.dart';
 import 'package:final_project_ba_char/providers/auth_provider.dart';
 import 'package:final_project_ba_char/routes/custom_route_transition.dart';
 import 'package:final_project_ba_char/routes/routes.dart';
-import 'package:final_project_ba_char/screens/clients_screen.dart';
+import 'package:final_project_ba_char/screens/purchases_screen.dart';
 import 'package:final_project_ba_char/screens/home_screen_BS.dart';
 import 'package:final_project_ba_char/screens/login_screen.dart';
 import 'package:final_project_ba_char/screens/no_page_found.dart';
 import 'package:final_project_ba_char/screens/operators_screen.dart';
-import 'package:final_project_ba_char/screens/packages_screen.dart';
-import 'package:final_project_ba_char/screens/rates_screen.dart';
-import 'package:final_project_ba_char/screens/routes_screen.dart';
-import 'package:final_project_ba_char/screens/vehiculos_screen.dart';
+import 'package:final_project_ba_char/screens/products_screen.dart';
+import 'package:final_project_ba_char/screens/suppliers_screen.dart';
+import 'package:final_project_ba_char/screens/sales_screen.dart';
+import 'package:final_project_ba_char/screens/vat_screen.dart';
 import 'package:final_project_ba_char/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +55,7 @@ abstract class AppRouter {
                   await context.read<AuthProvider>().isLoggedIn();
 
               if (authStatus == AuthStatus.authenticated) {
-                return Routes.home;
+                return Routes.homeRoute;
               }
 
               return null;
@@ -119,42 +119,32 @@ abstract class AppRouter {
       },
     ),
     GoRoute(
-      path: PageMenu.routes.route,
+      path: PageMenu.sales.route,
       redirect: _authRedirect,
       pageBuilder: (context, state) {
         return CustomFadeTransitionPage(
           key: state.pageKey,
-          child: const RoutesScreen(),
+          child: const SalesScreen(),
         );
       },
     ),
     GoRoute(
-      path: PageMenu.clients.route,
+      path: PageMenu.purchases.route,
       redirect: _authRedirect,
       pageBuilder: (context, state) {
         return CustomFadeTransitionPage(
           key: state.pageKey,
-          child: const ClientsScreen(),
+          child: const PurchasesScreen(),
         );
       },
     ),
     GoRoute(
-      path: PageMenu.packages.route,
+      path: PageMenu.products.route,
       redirect: _authRedirect,
       pageBuilder: (context, state) {
         return CustomFadeTransitionPage(
           key: state.pageKey,
-          child: const PackagesScreen(),
-        );
-      },
-    ),
-    GoRoute(
-      path: PageMenu.rates.route,
-      redirect: _authRedirect,
-      pageBuilder: (context, state) {
-        return CustomFadeTransitionPage(
-          key: state.pageKey,
-          child: const RatesScreen(),
+          child: const ProductsScreen(),
         );
       },
     ),
@@ -169,12 +159,22 @@ abstract class AppRouter {
       },
     ),
     GoRoute(
-      path: PageMenu.vehicles.route,
+      path: PageMenu.suppliers.route,
       redirect: _authRedirect,
       pageBuilder: (context, state) {
         return CustomFadeTransitionPage(
           key: state.pageKey,
-          child: const VehiculosScreen(),
+          child: const SuppliersScreen(),
+        );
+      },
+    ),
+    GoRoute(
+      path: PageMenu.vat.route,
+      redirect: _authRedirect,
+      pageBuilder: (context, state) {
+        return CustomFadeTransitionPage(
+          key: state.pageKey,
+          child: const VatScreen(),
         );
       },
     ),

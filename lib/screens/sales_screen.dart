@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RatesScreen extends StatefulWidget {
-  const RatesScreen({super.key});
+class SalesScreen extends StatefulWidget {
+  const SalesScreen({super.key});
 
   @override
-  State<RatesScreen> createState() => _RatesScreenState();
+  State<SalesScreen> createState() => _SalesScreenState();
 }
 
-class _RatesScreenState extends State<RatesScreen> {
+class _SalesScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     return Center(

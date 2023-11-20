@@ -5,11 +5,11 @@ mixin Routes {
   static String loading = '/loading';
 
   // Home barranco soft
-  static const String home = '/home';
-  static const String routes = '/routes';
-  static const String clients = '/clients';
-  static const String packages = '/packages';
-  static const String rates = '/rates';
-  static const String operators = '/operators';
-  static const String vehicles = '/vehicles';
+  static const String homeRoute = '/home';
+  static const String salesRoute = '/sales';
+  static const String purchasesRoute = '/purchases';
+  static const String productsRoute = '/products';
+  static const String operatorsRoute = '/operators';
+  static const String suppliersRoute = '/suppliers';
+  static const String vatRoute = '/vat';
 }

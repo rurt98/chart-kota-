@@ -2,9 +2,17 @@
     "id": "",
     "names": "Rafael Uriel",
     "last_names": "Rodriguez Torres",
-    "role": "admin",
-    "gender": "m",
+    "rfc": "23ABC",
     "email": "res.user?.email",
     "phone_number": "3313586555",
-    "created_at": "DateTime.now().toString()"
+    "created_at": "DateTime.now().toString()",
+    "address": {
+        "street": "Hacienda la llave",
+        "neighborhood": "Oblatos",
+        "num_ext": "2316",
+        "num_int": "2316",
+        "city": "Guadalajara",
+        "state": "Jalisco",
+        "country": "Mexico"
+    }
 }
