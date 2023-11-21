@@ -27,9 +27,9 @@ class _AuthLayoutState extends State<AuthLayout> {
         children: [
           wallpaper(),
           Align(
-            alignment: Alignment.centerLeft,
+            alignment: Alignment.centerRight,
             child: SizedBox(
-              width: 600,
+              width: 500,
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 350),
                 child: widget.child,
@@ -49,7 +49,7 @@ class _AuthLayoutState extends State<AuthLayout> {
           // TODO:
           Positioned.fill(
             child: Image.asset(
-              'assets/wallpapers/wallpaper_barranco_soft.jpg',
+              'assets/wallpapers/background.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -62,9 +62,10 @@ class _AuthLayoutState extends State<AuthLayout> {
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Image.asset(
-                  'assets/logos/logo_barranco_soft_2.png',
+                  'assets/logos/char[Kota].png',
                   width: 200,
                   fit: BoxFit.fitWidth,
+                  color: Colors.white,
                 ),
               ),
             ),

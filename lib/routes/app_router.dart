@@ -9,7 +9,6 @@ import 'package:final_project_ba_char/providers/auth_provider.dart';
 import 'package:final_project_ba_char/routes/custom_route_transition.dart';
 import 'package:final_project_ba_char/routes/routes.dart';
 import 'package:final_project_ba_char/screens/purchases_screen.dart';
-import 'package:final_project_ba_char/screens/home_screen_BS.dart';
 import 'package:final_project_ba_char/screens/login_screen.dart';
 import 'package:final_project_ba_char/screens/no_page_found.dart';
 import 'package:final_project_ba_char/screens/operators_screen.dart';
@@ -34,7 +33,7 @@ abstract class AppRouter {
                   await context.read<AuthProvider>().isLoggedIn();
 
               if (authStatus == AuthStatus.authenticated) {
-                return PageMenu.home.route;
+                return PageMenu.sales.route;
               }
 
               if (authStatus == AuthStatus.notAuthenticated) {
@@ -55,7 +54,7 @@ abstract class AppRouter {
                   await context.read<AuthProvider>().isLoggedIn();
 
               if (authStatus == AuthStatus.authenticated) {
-                return Routes.homeRoute;
+                return Routes.salesRoute;
               }
 
               return null;
@@ -108,16 +107,6 @@ abstract class AppRouter {
       );
 
   static final List<RouteBase> dashboard = [
-    GoRoute(
-      path: PageMenu.home.route,
-      redirect: _authRedirect,
-      pageBuilder: (context, state) {
-        return CustomFadeTransitionPage(
-          key: state.pageKey,
-          child: const HomeScreenBS(),
-        );
-      },
-    ),
     GoRoute(
       path: PageMenu.sales.route,
       redirect: _authRedirect,

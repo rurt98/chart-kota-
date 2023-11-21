@@ -359,7 +359,7 @@ class _DashboardLayoutState extends State<DashboardLayout>
                 children: [
                   const SizedBox(height: 10),
                   GestureDetector(
-                    onTap: () => context.go(PageMenu.home.route),
+                    onTap: () => context.go(PageMenu.sales.route),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,
@@ -369,8 +369,8 @@ class _DashboardLayoutState extends State<DashboardLayout>
                         width: 150,
                         height: 40,
                         images: const [
-                          'assets/logos/logo_barranco_soft_2.png',
-                          'assets/logos/logo_barranco_soft_3.png'
+                          'assets/logos/char[Kota].png',
+                          'assets/logos/[Kota].png'
                         ],
                       ),
                     ),
@@ -632,9 +632,7 @@ class ImageSwitcherState extends State<ImageSwitcher> {
         height: widget.height,
         child: Image.asset(
           widget.images[widget.currentImageIndex],
-          fit: widget.currentImageIndex == 1
-              ? BoxFit.fitWidth
-              : BoxFit.fitHeight,
+          fit: BoxFit.fitWidth,
           color: Colors.white,
         ),
       ),

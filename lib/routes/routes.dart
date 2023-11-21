@@ -5,7 +5,6 @@ mixin Routes {
   static String loading = '/loading';
 
   // Home barranco soft
-  static const String homeRoute = '/home';
   static const String salesRoute = '/sales';
   static const String purchasesRoute = '/purchases';
   static const String productsRoute = '/products';

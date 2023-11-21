@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> {
               if (context.screenSize != ScreenSize.large) ...[
                 Center(
                   child: Image.asset(
-                    'assets/logos/logo_barranco_soft_2.png',
+                    'assets/logos/char[Kota].png',
                     width: 200,
                     fit: BoxFit.fitWidth,
                     color: Colors.black,
@@ -155,6 +155,6 @@ class _LoginScreenState extends State<LoginScreen> {
           onError: (e) => ShowSnackBar.showError(context, message: e),
         );
 
-    if (res && mounted) context.go(PageMenu.home.route);
+    if (res && mounted) context.go(PageMenu.sales.route);
   }
 }

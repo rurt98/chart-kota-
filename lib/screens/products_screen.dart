@@ -96,6 +96,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   width: 300,
                 ),
                 ColumnInfo(
+                  name: 'Descripción',
+                  key: 'description',
+                  flex: 2,
+                  width: 300,
+                ),
+                ColumnInfo(
                   name: 'Precio',
                   key: 'price',
                   width: 250,

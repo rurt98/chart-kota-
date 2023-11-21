@@ -1,5 +1,4 @@
 import 'package:custom_data_table/custom_data_table.dart';
-import 'package:final_project_ba_char/models/address.dart';
 import 'package:final_project_ba_char/models/user.dart';
 import 'package:final_project_ba_char/providers/operators_provider.dart';
 import 'package:final_project_ba_char/styles/styles.dart';

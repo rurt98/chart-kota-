@@ -11,6 +11,7 @@ class Product {
   DateTime? createdAt;
   DateTime? updatedAt;
   User? supplier;
+  int? quantity;
 
   Product({
     this.uid,
@@ -22,6 +23,7 @@ class Product {
     this.supplier,
     this.description,
     this.barcode,
+    this.quantity = 0,
   });
 
   Product copyWith({
@@ -34,6 +36,7 @@ class Product {
     User? supplier,
     String? description,
     String? barcode,
+    int? quantity,
   }) =>
       Product(
         uid: uid ?? this.uid,
@@ -45,6 +48,7 @@ class Product {
         supplier: supplier ?? this.supplier,
         description: description ?? this.description,
         barcode: barcode ?? this.barcode,
+        quantity: quantity ?? this.quantity,
       );
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -60,6 +64,7 @@ class Product {
             : DateTime.parse(json["updated_at"]),
         description: json['description'],
         barcode: json["barcode"],
+        quantity: json["quantity"],
         // supplier:
         //     json["supplier"] == null ? null : User.fromJson(json["supplier"]),
       );
@@ -75,6 +80,17 @@ class Product {
         if (description != null) 'description': description,
       };
 
+  Map<String, dynamic> toProductSale() => {
+        if (barcode != null) "barcode": barcode,
+        if (name != null) "name": name,
+        if (price != null) "price": price! * 100,
+        if (createdAt != null) "created_at": createdAt?.toIso8601String(),
+        if (updatedAt != null) "updated_at": updatedAt?.toIso8601String(),
+        if (supplier != null) "supplier": supplier!.toJson(),
+        if (description != null) 'description': description,
+        if ((quantity ?? 0) > 0) 'quantity': quantity,
+      };
+
   Map<String, dynamic> toDataTable() => {
         "name": name ?? '-',
         "stock": stock ?? 0,
@@ -84,5 +100,14 @@ class Product {
         "supplier": supplier?.toString() ?? '-',
         "description": description ?? '-',
         "barcode": barcode ?? '-',
+        "quantity": quantity ?? 0,
+        "total": '\$${_getTotal()}',
       };
+
+  double _getTotal() => (price ?? 0) * (quantity ?? 1);
+
+  @override
+  String toString() {
+    return '${barcode != null ? "$barcode /" : ""} ${name != null ? "$name /" : ""} ${price != null ? "\$$price" : ""}';
+  }
 }

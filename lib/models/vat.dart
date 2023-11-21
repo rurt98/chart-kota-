@@ -57,8 +57,11 @@ class Vat {
           "history": history!.map((e) => e.toJson()).toList(),
       };
   Map<String, dynamic> toDataTable() => {
-        "vat": vat != null ? "$vat %" : '-',
+        "vat": toString(),
         "created_at": createdAt?.dateAndHour24ToString ?? '-',
         "updated_at": updatedAt?.dateAndHour24ToString ?? '-'
       };
+
+  @override
+  String toString() => vat != null ? "$vat %" : '-';
 }

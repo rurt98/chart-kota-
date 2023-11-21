@@ -174,6 +174,35 @@ class ProductsProvider with ChangeNotifier {
         ),
       );
 
+  Future<List<Product>> search({
+    String? barcode,
+    Function(String)? onError,
+  }) async {
+    try {
+      final query = db
+          .collection("products")
+          .where('barcode', isGreaterThanOrEqualTo: barcode)
+          .where('barcode', isLessThanOrEqualTo: '$barcode\uf8ff');
+
+      final documentSnapshots = await query.get();
+
+      if (documentSnapshots.docs.isEmpty) {
+        return [];
+      }
+
+      return List.from(
+        documentSnapshots.docs.map(
+          (e) => Product.fromJson(
+            e.data(),
+          ),
+        ),
+      );
+    } on FirebaseException catch (e) {
+      onError?.call(e.code);
+    } catch (_) {}
+    return [];
+  }
+
   Future<bool> create({
     required Map<String, dynamic> data,
     required String supplierId,
