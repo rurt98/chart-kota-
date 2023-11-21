@@ -5,6 +5,7 @@ import 'package:final_project_ba_char/providers/db_provider.dart';
 import 'package:final_project_ba_char/providers/operators_provider.dart';
 import 'package:final_project_ba_char/providers/rates_provider.dart';
 import 'package:final_project_ba_char/providers/suppliers_provider.dart';
+import 'package:final_project_ba_char/providers/vat_provider.dart';
 import 'package:final_project_ba_char/routes/app_router.dart';
 import 'package:final_project_ba_char/styles/themes.dart';
 
@@ -65,6 +66,12 @@ class _MyAppState extends State<MyApp> {
                     ),
                     ChangeNotifierProvider(
                       create: (context) => SuppliersProvider(
+                        dbProvider,
+                        authContext!.read<AuthProvider>(),
+                      ),
+                    ),
+                    ChangeNotifierProvider(
+                      create: (context) => VatProvider(
                         dbProvider,
                         authContext!.read<AuthProvider>(),
                       ),
