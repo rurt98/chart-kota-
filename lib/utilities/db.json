@@ -1,6 +1,9 @@
 {
     "id": "",
-    "vat": 0.16,
-    "created_at": "",
-    "updated_at": ""
+    "name": "",
+    "stock": 2000,
+    "price": 12000,
+    "supplier": {
+        "id": ""
+    }
 }
