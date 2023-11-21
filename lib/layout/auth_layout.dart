@@ -58,7 +58,7 @@ class _AuthLayoutState extends State<AuthLayout> {
           ),
           if (context.screenSize == ScreenSize.large)
             Align(
-              alignment: Alignment.bottomRight,
+              alignment: Alignment.bottomLeft,
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Image.asset(

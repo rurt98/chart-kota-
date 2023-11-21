@@ -50,7 +50,7 @@ enum PageMenu {
 }
 
 extension PageMenuExtension on PageMenu {
-  static List<PageMenu> get navigationBarrancoSoft => [
+  static List<PageMenu> get navigationCharKotaoft => [
         PageMenu.sales,
         PageMenu.purchases,
         PageMenu.products,

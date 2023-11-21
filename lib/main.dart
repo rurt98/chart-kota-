@@ -91,7 +91,7 @@ class _MyAppState extends State<MyApp> {
                     ),
                   ],
                   child: MaterialApp.router(
-                    title: 'BarrancoSoft',
+                    title: 'char[kota]',
                     theme: Themes.lightTheme(context),
                     debugShowCheckedModeBanner: false,
                     routerConfig: goRouter,

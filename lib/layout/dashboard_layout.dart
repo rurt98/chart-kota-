@@ -384,7 +384,7 @@ class _DashboardLayoutState extends State<DashboardLayout>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          ...PageMenuExtension.navigationBarrancoSoft.map(
+                          ...PageMenuExtension.navigationCharKotaoft.map(
                             (e) {
                               return navigationItem(
                                 pageMenu: e,
