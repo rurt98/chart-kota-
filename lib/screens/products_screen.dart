@@ -158,8 +158,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
 class FormProductWidget extends StatefulWidget {
   final Product? product;
+  final Function(Product)? onPressed;
 
-  const FormProductWidget({super.key, this.product});
+  const FormProductWidget({
+    super.key,
+    this.product,
+    this.onPressed,
+  });
 
   @override
   FormProductWidgetState createState() => FormProductWidgetState();
@@ -192,7 +197,7 @@ class FormProductWidgetState extends State<FormProductWidget> {
         return FormTemplate(
           scrollController: scrollController,
           loading: isLoading,
-          titulo: "${edit ? "Editar" : "Nuevo"} empleado",
+          titulo: "${edit ? "Editar" : "Nuevo"} producto",
           onPressSave: _onPressSave,
           formKey: _formKey,
           onBack: () {
@@ -238,9 +243,25 @@ class FormProductWidgetState extends State<FormProductWidget> {
                 onChanged: (value) => product.stock = int.tryParse(value),
                 validators: (value) => value?.validatorLeesThan255,
               ),
+              if (widget.onPressed != null)
+                Forms.textField(
+                  hintText: "Precio de compra",
+                  labelText: "Precio de compra",
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[0-9.]'),
+                    ),
+                  ],
+                  initialValue: product.purchasePrice?.toString(),
+                  onChanged: (value) =>
+                      product.purchasePrice = double.tryParse(value),
+                  validators: (value) => value?.validatorLeesThan255,
+                ),
               Forms.textField(
-                hintText: "Precio",
-                labelText: "Precio",
+                hintText: "Precio de venta",
+                labelText: "Precio de venta",
                 isRequired: true,
                 keyboardType: TextInputType.number,
                 inputFormatters: <TextInputFormatter>[
@@ -252,16 +273,17 @@ class FormProductWidgetState extends State<FormProductWidget> {
                 onChanged: (value) => product.price = double.tryParse(value),
                 validators: (value) => value?.validatorLeesThan255,
               ),
-              StatefulBuilder(
-                builder: (_, setState) {
-                  return SearchSupplier(
-                    userSelected: product.supplier,
-                    label: 'Proveedor (Buscar por nombres)',
-                    onSelected: (v) => setState(() => product.supplier = v),
-                    bottomPadding: 300,
-                  );
-                },
-              ),
+              if (widget.onPressed == null)
+                StatefulBuilder(
+                  builder: (_, setState) {
+                    return SearchSupplier(
+                      userSelected: product.supplier,
+                      label: 'Proveedor (Buscar por nombres)',
+                      onSelected: (v) => setState(() => product.supplier = v),
+                      bottomPadding: 300,
+                    );
+                  },
+                ),
             ],
           ),
         );
@@ -275,6 +297,12 @@ class FormProductWidgetState extends State<FormProductWidget> {
     if (_formKey.currentState?.validate() != true) return;
 
     _formKey.currentState?.save();
+
+    if (widget.onPressed != null) {
+      widget.onPressed!.call(product);
+      context.pop();
+      return;
+    }
 
     _loading.value = true;
 

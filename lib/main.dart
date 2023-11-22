@@ -4,6 +4,7 @@ import 'package:final_project_ba_char/providers/bar_navigation_provider.dart';
 import 'package:final_project_ba_char/providers/db_provider.dart';
 import 'package:final_project_ba_char/providers/operators_provider.dart';
 import 'package:final_project_ba_char/providers/products_provider.dart';
+import 'package:final_project_ba_char/providers/purchases_provider.dart';
 import 'package:final_project_ba_char/providers/rates_provider.dart';
 import 'package:final_project_ba_char/providers/sales_provider.dart';
 import 'package:final_project_ba_char/providers/suppliers_provider.dart';
@@ -85,6 +86,12 @@ class _MyAppState extends State<MyApp> {
                     ),
                     ChangeNotifierProvider(
                       create: (context) => SalesProvider(
+                        dbProvider,
+                        authContext!.read<AuthProvider>(),
+                      ),
+                    ),
+                    ChangeNotifierProvider(
+                      create: (context) => PurchasesProvider(
                         dbProvider,
                         authContext!.read<AuthProvider>(),
                       ),

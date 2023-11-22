@@ -8,6 +8,7 @@ class Product {
   String? barcode;
   int? stock;
   double? price;
+  double? purchasePrice;
   DateTime? createdAt;
   DateTime? updatedAt;
   User? supplier;
@@ -18,6 +19,7 @@ class Product {
     this.name,
     this.stock,
     this.price,
+    this.purchasePrice,
     this.createdAt,
     this.updatedAt,
     this.supplier,
@@ -31,6 +33,7 @@ class Product {
     String? name,
     int? stock,
     double? price,
+    double? purchasePrice,
     DateTime? createdAt,
     DateTime? updatedAt,
     User? supplier,
@@ -49,6 +52,7 @@ class Product {
         description: description ?? this.description,
         barcode: barcode ?? this.barcode,
         quantity: quantity ?? this.quantity,
+        purchasePrice: purchasePrice ?? this.purchasePrice,
       );
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
@@ -56,6 +60,9 @@ class Product {
         name: json["name"],
         stock: json["stock"],
         price: json["price"] != null ? json["price"] / 100 : null,
+        purchasePrice: json["purchase_price"] != null
+            ? json["purchase_price"] / 100
+            : null,
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -89,6 +96,7 @@ class Product {
         if (supplier != null) "supplier": supplier!.toJson(),
         if (description != null) 'description': description,
         if ((quantity ?? 0) > 0) 'quantity': quantity,
+        if (purchasePrice != null) 'purchase_price': purchasePrice! * 100,
       };
 
   Map<String, dynamic> toDataTable() => {
@@ -102,6 +110,8 @@ class Product {
         "barcode": barcode ?? '-',
         "quantity": quantity ?? 0,
         "total": '\$${_getTotal()}',
+        'purchase_price':
+            (purchasePrice != null ? '\$$purchasePrice' : null) ?? '-',
       };
 
   double _getTotal() => (price ?? 0) * (quantity ?? 1);

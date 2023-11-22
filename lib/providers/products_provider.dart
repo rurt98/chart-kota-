@@ -206,6 +206,7 @@ class ProductsProvider with ChangeNotifier {
   Future<bool> create({
     required Map<String, dynamic> data,
     required String supplierId,
+    String? barcode,
     Function(String)? onError,
   }) async {
     loading = true;
@@ -217,7 +218,7 @@ class ProductsProvider with ChangeNotifier {
       final date = DateTime.now().toString();
 
       data['uid'] = uid;
-      data["barcode"] = generateBarcode(uid);
+      data["barcode"] = barcode ?? generateBarcode(uid);
       data['created_at'] = date;
       data['updated_at'] = date;
 

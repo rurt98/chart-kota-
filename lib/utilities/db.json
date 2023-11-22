@@ -1,14 +1,9 @@
 {
     "id": "",
-    "pay_method": "cash",
-    "operator": {
-        "id": ""
-    },
     "date": "2023-11-20 21:16:12.238",
-    "vat": {
-        "id": ""
-    },
+    "status": "completed",
     "products": [{
-        "id": ""
+        "id": "",
+        "purchase_price": 5000
     }]
 }

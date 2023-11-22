@@ -113,6 +113,11 @@ class _SalesScreenState extends State<SalesScreen> {
                   width: 250,
                 ),
                 ColumnInfo(
+                  name: 'Operador',
+                  key: 'operator',
+                  width: 250,
+                ),
+                ColumnInfo(
                   name: 'Fecha',
                   key: 'date',
                   width: 300,

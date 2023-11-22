@@ -104,6 +104,7 @@ class Sale {
       "vat": '${vat?.toString() ?? '-'} (\$${totals.$2})',
       "products": products?.length.toString() ?? '0',
       'folio': folio ?? '-',
+      "operator": saleOperator?.toString() ?? '-',
     };
   }
 }

@@ -2,25 +2,26 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_data_table/custom_data_table.dart';
-import 'package:final_project_ba_char/models/sale.dart';
-import 'package:final_project_ba_char/models/vat.dart';
+import 'package:final_project_ba_char/models/purchase.dart';
 
 import 'package:final_project_ba_char/providers/auth_provider.dart' as provider;
 import 'package:final_project_ba_char/providers/db_provider.dart';
+import 'package:final_project_ba_char/providers/products_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project_ba_char/models/user.dart' as model;
+import 'package:provider/provider.dart';
 
-class SalesProvider with ChangeNotifier {
+class PurchasesProvider with ChangeNotifier {
   final DBProvider dbProvider;
   final provider.AuthProvider authProvider;
 
   FirebaseFirestore get db => dbProvider.db;
   FirebaseAuth get auth => authProvider.auth;
 
-  SalesProvider(this.dbProvider, this.authProvider);
+  PurchasesProvider(this.dbProvider, this.authProvider);
 
-  List<Sale>? sales;
+  List<Purchase>? purchases;
 
   PaginatorInfo paginatorInfo = PaginatorInfo(
     total: 0,
@@ -39,25 +40,27 @@ class SalesProvider with ChangeNotifier {
   DocumentSnapshot? lastDocument;
   DocumentSnapshot? firstDocument;
 
-  Future<List<Sale>?> obtenerLista({
+  Future<List<Purchase>?> obtenerLista({
     Function(String)? onError,
   }) async {
     loading = true;
     try {
       paginatorInfo.lastPage = 1;
-      final first =
-          db.collection("sales").orderBy("date").limit(paginatorInfo.perPage!);
+      final first = db
+          .collection("purchases")
+          .orderBy("date")
+          .limit(paginatorInfo.perPage!);
 
       final documentSnapshots = await first.get();
 
       if (documentSnapshots.docs.isEmpty) {
         paginatorInfo.lastPage = paginatorInfo.currentPage;
-        sales = [];
+        purchases = [];
         loading = false;
-        return sales;
+        return purchases;
       }
 
-      sales = await getSales(documentSnapshots);
+      purchases = await getPurchases(documentSnapshots);
 
       lastDocument = documentSnapshots.docs.last;
       firstDocument = documentSnapshots.docs.first;
@@ -67,7 +70,7 @@ class SalesProvider with ChangeNotifier {
 
       loading = false;
 
-      return sales;
+      return purchases;
     } on FirebaseException catch (e) {
       onError?.call(e.code);
     } catch (_) {}
@@ -75,13 +78,13 @@ class SalesProvider with ChangeNotifier {
     return null;
   }
 
-  Future<List<Sale>?> fetchNextPage({
+  Future<List<Purchase>?> fetchNextPage({
     Function(String)? onError,
   }) async {
-    if (lastDocument == null) return sales;
+    if (lastDocument == null) return purchases;
     try {
       final next = db
-          .collection("sales")
+          .collection("purchases")
           .orderBy("date")
           .startAfterDocument(lastDocument!)
           .limit(paginatorInfo.perPage!);
@@ -91,10 +94,10 @@ class SalesProvider with ChangeNotifier {
       if (nextDocumentSnapshots.docs.isEmpty) {
         paginatorInfo.lastPage = paginatorInfo.currentPage;
         loading = false;
-        return sales;
+        return purchases;
       }
 
-      sales = await getSales(nextDocumentSnapshots);
+      purchases = await getPurchases(nextDocumentSnapshots);
 
       lastDocument = nextDocumentSnapshots.docs.last;
       firstDocument = nextDocumentSnapshots.docs.first;
@@ -104,15 +107,15 @@ class SalesProvider with ChangeNotifier {
 
       loading = false;
 
-      return sales;
+      return purchases;
     } on FirebaseException catch (e) {
       onError?.call(e.code);
     }
     loading = false;
-    return sales;
+    return purchases;
   }
 
-  Future<List<Sale>?> fetchPreviosPage({
+  Future<List<Purchase>?> fetchPreviosPage({
     Function(String)? onError,
   }) async {
     loading = true;
@@ -124,14 +127,14 @@ class SalesProvider with ChangeNotifier {
       }
 
       final previous = db
-          .collection("sales")
+          .collection("purchases")
           .orderBy("date")
           .endBeforeDocument(firstDocument!)
           .limitToLast(paginatorInfo.perPage!);
 
       final documentSnapshots = await previous.get();
 
-      sales = await getSales(documentSnapshots);
+      purchases = await getPurchases(documentSnapshots);
 
       lastDocument = documentSnapshots.docs.last;
       firstDocument = documentSnapshots.docs.first;
@@ -141,7 +144,7 @@ class SalesProvider with ChangeNotifier {
       paginatorInfo.lastPage = (paginatorInfo.currentPage ?? 1) + 1;
 
       loading = false;
-      return sales;
+      return purchases;
     } on FirebaseException catch (e) {
       onError?.call(e.code);
     } catch (_) {}
@@ -149,70 +152,75 @@ class SalesProvider with ChangeNotifier {
     return null;
   }
 
-  Future<List<Sale>?> getSales(
+  Future<List<Purchase>?> getPurchases(
       QuerySnapshot<Map<String, dynamic>> documentSnapshots) async {
     return Future.wait(
       documentSnapshots.docs.map(
         (e) async {
-          var saleData = e.data();
-          var sale = Sale.fromJson(saleData);
+          var purchaseData = e.data();
+          var purchase = Purchase.fromJson(purchaseData);
 
-          if (saleData.containsKey('operator') &&
-              saleData['operator'] is DocumentReference) {
-            DocumentReference operatorRef =
-                saleData['operator'] as DocumentReference;
-
-            DocumentSnapshot operatorSnapshot = await operatorRef.get();
+          if (purchaseData.containsKey('operator') &&
+              purchaseData['operator'] is DocumentReference) {
+            DocumentSnapshot operatorSnapshot =
+                await (purchaseData['operator'] as DocumentReference).get();
 
             if (operatorSnapshot.exists) {
-              sale.saleOperator = model.User.fromJson(
+              purchase.purchaseOperator = model.User.fromJson(
                   operatorSnapshot.data() as Map<String, dynamic>);
             }
           }
 
-          return sale;
+          if (purchaseData.containsKey('supplier') &&
+              purchaseData['supplier'] is DocumentReference) {
+            DocumentSnapshot operatorSnapshot =
+                await (purchaseData['supplier'] as DocumentReference).get();
+
+            if (operatorSnapshot.exists) {
+              purchase.supplier = model.User.fromJson(
+                  operatorSnapshot.data() as Map<String, dynamic>);
+            }
+          }
+
+          return purchase;
         },
       ),
     );
   }
 
-  Future<bool> create({
-    required Sale sale,
-    required Vat vat,
+  Future<bool> create(
+    BuildContext context, {
+    required Purchase purchase,
     Function(String)? onError,
   }) async {
     loading = true;
     try {
-      DocumentReference saleRef = db.collection('sales').doc();
+      DocumentReference purchaseRef = db.collection('purchases').doc();
 
-      String uid = saleRef.id;
+      String uid = purchaseRef.id;
 
-      vat.history = null;
-      sale.vat = vat;
-
-      final data = sale.toJson();
+      final data = purchase.toJson();
 
       data['uid'] = uid;
-      data['date'] = DateTime.now().toString();
 
-      await saleRef.set(data).then((_) async {
-        for (var product in sale.products!) {
-          DocumentReference productRef =
-              db.collection('products').doc(product.uid);
-
-          final stock = product.stock! - product.quantity!;
-
-          await productRef.update({
-            'stock': stock,
-          });
-        }
+      await purchaseRef.set(data).then((_) async {
+        Future.wait([
+          ...purchase.products!
+              .map((e) => context.read<ProductsProvider>().create(
+                    data: e.toJson(),
+                    supplierId: purchase.supplier!.uid!,
+                    barcode: e.uid,
+                  ))
+              .toList()
+        ]);
       });
 
-      DocumentReference operatorRef =
-          db.collection('users').doc(authProvider.user!.uid);
+      await purchaseRef.update({
+        'supplier': db.collection('suppliers').doc(purchase.supplier!.uid!),
+      });
 
-      await saleRef.update({
-        'operator': operatorRef,
+      await purchaseRef.update({
+        'operator': db.collection('users').doc(authProvider.user!.uid),
       });
 
       await obtenerLista(onError: onError);
@@ -222,7 +230,7 @@ class SalesProvider with ChangeNotifier {
       return true;
     } on FirebaseException catch (e) {
       onError?.call(e.code);
-    }
+    } catch (_) {}
     loading = false;
     return false;
   }
