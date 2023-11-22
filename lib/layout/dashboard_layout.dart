@@ -633,7 +633,7 @@ class ImageSwitcherState extends State<ImageSwitcher> {
         child: Image.asset(
           widget.images[widget.currentImageIndex],
           fit: BoxFit.fitWidth,
-          color: Colors.white,
+          color: accentColor,
         ),
       ),
       transitionBuilder: (child, animation) {

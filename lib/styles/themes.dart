@@ -135,7 +135,7 @@ abstract class Themes {
         selectedIconTheme: IconThemeData(
           color: orangeApp,
         ),
-        unselectedIconTheme: const IconThemeData(color: Colors.white60),
+        unselectedIconTheme: const IconThemeData(color: Colors.white70),
         selectedLabelTextStyle: GoogleFonts.montserrat(
           fontSize: 10,
           color: Colors.white,
