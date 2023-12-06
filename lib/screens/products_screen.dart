@@ -158,12 +158,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
 class FormProductWidget extends StatefulWidget {
   final Product? product;
+  final bool purchaseProduct;
   final Function(Product)? onPressed;
 
   const FormProductWidget({
     super.key,
     this.product,
     this.onPressed,
+    this.purchaseProduct = false,
   });
 
   @override
@@ -229,20 +231,36 @@ class FormProductWidgetState extends State<FormProductWidget> {
                   validators: (value) => value?.validatorLeesThan255,
                 ),
               ),
-              Forms.textField(
-                hintText: "Stock",
-                labelText: "Stock",
-                isRequired: true,
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(
-                    RegExp(r'[0-9]'),
-                  ),
-                ],
-                initialValue: product.stock?.toString(),
-                onChanged: (value) => product.stock = int.tryParse(value),
-                validators: (value) => value?.validatorLeesThan255,
-              ),
+              if (widget.purchaseProduct)
+                Forms.textField(
+                  hintText: "Cantidad",
+                  labelText: "Cantidad",
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[0-9]'),
+                    ),
+                  ],
+                  initialValue: product.quantity?.toString(),
+                  onChanged: (value) => product.quantity = int.tryParse(value),
+                  validators: (value) => value?.validatorLeesThan255,
+                )
+              else
+                Forms.textField(
+                  hintText: "Stock",
+                  labelText: "Stock",
+                  isRequired: true,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[0-9]'),
+                    ),
+                  ],
+                  initialValue: product.stock?.toString(),
+                  onChanged: (value) => product.stock = int.tryParse(value),
+                  validators: (value) => value?.validatorLeesThan255,
+                ),
               if (widget.onPressed != null)
                 Forms.textField(
                   hintText: "Precio de compra",

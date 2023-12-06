@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_data_table/custom_data_table.dart';
+import 'package:final_project_ba_char/models/product.dart';
 import 'package:final_project_ba_char/models/purchase.dart';
+import 'package:final_project_ba_char/models/vat.dart';
 
 import 'package:final_project_ba_char/providers/auth_provider.dart' as provider;
 import 'package:final_project_ba_char/providers/db_provider.dart';
@@ -191,6 +193,7 @@ class PurchasesProvider with ChangeNotifier {
   Future<bool> create(
     BuildContext context, {
     required Purchase purchase,
+    required Vat vat,
     Function(String)? onError,
   }) async {
     loading = true;
@@ -198,20 +201,35 @@ class PurchasesProvider with ChangeNotifier {
       DocumentReference purchaseRef = db.collection('purchases').doc();
 
       String uid = purchaseRef.id;
-
+      vat.history = null;
+      purchase.vat = vat;
       final data = purchase.toJson();
 
       data['uid'] = uid;
 
+      final listToSave =
+          purchase.products!.where((element) => element.createdAt == null);
+
+      final listToEdit =
+          purchase.products!.where((element) => element.createdAt != null);
+
       await purchaseRef.set(data).then((_) async {
         Future.wait([
-          ...purchase.products!
-              .map((e) => context.read<ProductsProvider>().create(
-                    data: e.toJson(),
-                    supplierId: purchase.supplier!.uid!,
-                    barcode: e.uid,
-                  ))
-              .toList()
+          ...listToSave.map((e) {
+            e.stock = e.quantity;
+            return context.read<ProductsProvider>().create(
+                  data: e.toJson(),
+                  supplierId: purchase.supplier!.uid!,
+                  barcode: e.uid,
+                );
+          }).toList(),
+          ...listToEdit.map((e) {
+            final stock = (e.stock ?? 0) + (e.quantity ?? 0);
+            return db
+                .collection('products')
+                .doc(e.uid)
+                .update({'stock': stock});
+          }).toList(),
         ]);
       });
 
@@ -233,6 +251,40 @@ class PurchasesProvider with ChangeNotifier {
     } catch (_) {}
     loading = false;
     return false;
+  }
+
+  Future<List<Product>> searchProduct({
+    String? barcode,
+    required String uid,
+    Function(String)? onError,
+  }) async {
+    try {
+      DocumentReference supplierRef = db.collection('suppliers').doc(uid);
+      final query = db
+          .collection("products")
+          .where('barcode', isGreaterThanOrEqualTo: barcode)
+          .where('barcode', isLessThanOrEqualTo: '$barcode\uf8ff')
+          .where('supplier', isEqualTo: supplierRef);
+
+      final documentSnapshots = await query.get();
+
+      if (documentSnapshots.docs.isEmpty) {
+        return [];
+      }
+
+      return List.from(
+        documentSnapshots.docs.map(
+          (e) => Product.fromJson(
+            e.data(),
+          ),
+        ),
+      );
+    } on FirebaseException catch (e) {
+      onError?.call(e.code);
+    } catch (e) {
+      print(e);
+    }
+    return [];
   }
 
   String generateFolio() {

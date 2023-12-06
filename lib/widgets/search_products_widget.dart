@@ -1,5 +1,6 @@
 import 'package:final_project_ba_char/models/product.dart';
 import 'package:final_project_ba_char/providers/products_provider.dart';
+import 'package:final_project_ba_char/providers/purchases_provider.dart';
 import 'package:final_project_ba_char/utilities/show_snackbar.dart';
 import 'package:final_project_ba_char/widgets/custom_auto_complete.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class SearchProductsWidget extends StatelessWidget {
   final String label;
   final List<String>? productsSelected;
   final double bottomPadding;
+  final String? supplierId;
 
   const SearchProductsWidget({
     super.key,
@@ -21,6 +23,7 @@ class SearchProductsWidget extends StatelessWidget {
     this.productsSelected,
     required this.label,
     required this.bottomPadding,
+    this.supplierId,
   });
 
   @override
@@ -33,10 +36,20 @@ class SearchProductsWidget extends StatelessWidget {
         isRequired: isRequired,
         label: label,
         optionsBuilder: (textEditingValue) async {
-          final products = await context.read<ProductsProvider>().search(
-                barcode: textEditingValue.text,
-                onError: (e) => ShowSnackBar.showError(context, message: e),
-              );
+          late List<Product> products;
+
+          if (supplierId != null) {
+            products = await context.read<PurchasesProvider>().searchProduct(
+                  barcode: textEditingValue.text,
+                  uid: supplierId!,
+                  onError: (e) => ShowSnackBar.showError(context, message: e),
+                );
+          } else {
+            products = await context.read<ProductsProvider>().search(
+                  barcode: textEditingValue.text,
+                  onError: (e) => ShowSnackBar.showError(context, message: e),
+                );
+          }
 
           if (productsSelected != null) {
             products.removeWhere(

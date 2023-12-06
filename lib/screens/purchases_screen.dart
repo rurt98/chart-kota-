@@ -1,7 +1,9 @@
 import 'package:custom_data_table/custom_data_table.dart';
 import 'package:final_project_ba_char/models/product.dart';
 import 'package:final_project_ba_char/models/purchase.dart';
+import 'package:final_project_ba_char/models/vat.dart';
 import 'package:final_project_ba_char/providers/purchases_provider.dart';
+import 'package:final_project_ba_char/providers/vat_provider.dart';
 import 'package:final_project_ba_char/screens/products_screen.dart';
 
 import 'package:final_project_ba_char/styles/colors.dart';
@@ -12,6 +14,7 @@ import 'package:final_project_ba_char/utilities/show_dialog.dart';
 import 'package:final_project_ba_char/utilities/show_snackbar.dart';
 import 'package:final_project_ba_char/widgets/custom_error.dart';
 import 'package:final_project_ba_char/widgets/page_loading_absorb_pointer.dart';
+import 'package:final_project_ba_char/widgets/search_products_widget.dart';
 import 'package:final_project_ba_char/widgets/search_supplier_widget.dart';
 import 'package:final_project_ba_char/widgets/text_count_widget.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +35,7 @@ class _PurchasesScreenState extends State<PurchasesScreen> {
   @override
   void initState() {
     provider = context.read<PurchasesProvider>();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       provider.obtenerLista(
@@ -180,6 +184,11 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
   void initState() {
     purchase = widget.purchase;
     purchase.status = PurchaseStatus.completed;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<VatProvider>().obtenerLista(
+            onError: (e) => ShowSnackBar.showError(context, message: e),
+          );
+    });
     super.initState();
   }
 
@@ -198,17 +207,32 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
               key: _formKey,
               child: Column(
                 children: [
-                  StatefulBuilder(
-                    builder: (_, setState) {
-                      return SearchSupplier(
-                        userSelected: purchase.supplier,
-                        label: 'Proveedor (Buscar por nombres)',
-                        onSelected: (v) =>
-                            setState(() => purchase.supplier = v),
-                        bottomPadding: 0,
-                      );
-                    },
+                  SearchSupplier(
+                    userSelected: purchase.supplier,
+                    label: 'Proveedor (Buscar por nombres)',
+                    onSelected: (v) => setState(() => purchase.supplier = v),
+                    bottomPadding: 0,
                   ),
+                  if (purchase.supplier?.uid != null) ...[
+                    SearchProductsWidget(
+                      productSelected: null,
+                      isRequired: false,
+                      supplierId: purchase.supplier!.uid,
+                      label:
+                          'Productos relacionados con proveedor (Buscar por código de barras)',
+                      productsSelected:
+                          purchase.products?.map((e) => e.uid!).toList(),
+                      onSelected: (v) {
+                        v.quantity = 1;
+                        setState(() {
+                          purchase.products ??= [];
+                          purchase.products!.add(v);
+                        });
+                      },
+                      bottomPadding: 0,
+                    ),
+                    const SizedBox(height: 5),
+                  ],
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -218,8 +242,8 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
                         onPressed: () => ShowDialog.showSimpleRightDialog(
                           context,
                           child: FormProductWidget(
+                            purchaseProduct: true,
                             onPressed: (v) {
-                              v.quantity = v.stock;
                               v.uid = context
                                   .read<PurchasesProvider>()
                                   .generateFolio();
@@ -340,11 +364,12 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
                     context,
                     child: FormProductWidget(
                       product: product,
+                      purchaseProduct: true,
                       onPressed: (v) {
-                        v.quantity = v.stock;
-
                         final i = purchase.products!
                             .indexWhere((element) => element.uid == v.uid);
+
+                        if (i < 0) return;
 
                         purchase.products![i] = v;
 
@@ -363,29 +388,50 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
   }
 
   Widget _buildSummary() {
-    final total = _getSubTotal();
+    return Selector<VatProvider, (bool, Vat?)>(
+      selector: (_, provider) => (provider.loading, provider.vat),
+      shouldRebuild: (previous, next) => true,
+      builder: (context, values, child) {
+        final obteniendo = values.$1;
+        final vat = values.$2;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Divider(),
-        _buildPayInfo('TOTAL A PAGAR', '\$$total'),
-        const SizedBox(height: 5),
-        Row(
+        if (vat == null && obteniendo) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (vat == null && !obteniendo) {
+          return const Center(child: CustomError());
+        }
+
+        final subtotal = _getSubTotal();
+        final iva = _getIva(subtotal, vat!.vat!);
+        final total = _getTotal(subtotal, iva);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () => _onPressSave(),
-                child: const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Text("Pagar"),
+            const Divider(),
+            _buildPayInfo('SUBTOTAL', '\$$subtotal'),
+            const Divider(),
+            _buildPayInfo('IVA', '\$$iva'),
+            const Divider(),
+            _buildPayInfo('TOTAL A PAGAR', '\$$total'),
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => _onPressSave(vat),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text("Pagar"),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
-        ),
-      ],
+        );
+      },
     );
   }
 
@@ -399,6 +445,15 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
 
     return subtotal;
   }
+
+  double _getIva(double subtotal, int iva) {
+    double ivaTem = iva / 100;
+    double totalIva = subtotal * ivaTem;
+
+    return double.parse(totalIva.toStringAsFixed(2));
+  }
+
+  double _getTotal(double subtotal, double iva) => subtotal + iva;
 
   Widget _buildPayInfo(String title, String price) {
     return Row(
@@ -419,7 +474,7 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
     );
   }
 
-  Future _onPressSave() async {
+  Future _onPressSave(Vat vat) async {
     FocusScope.of(context).unfocus();
 
     if (_formKey.currentState?.validate() != true) return;
@@ -439,6 +494,7 @@ class FormPurchaseWidgetState extends State<FormPurchaseWidget> {
     final successful = await context.read<PurchasesProvider>().create(
           context,
           purchase: purchase,
+          vat: vat,
           onError: (e) => ShowSnackBar.showError(context, message: e),
         );
 

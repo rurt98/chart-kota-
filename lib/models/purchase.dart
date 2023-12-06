@@ -1,5 +1,6 @@
 import 'package:final_project_ba_char/models/product.dart';
 import 'package:final_project_ba_char/models/user.dart';
+import 'package:final_project_ba_char/models/vat.dart';
 import 'package:final_project_ba_char/utilities/date_time_extensions.dart';
 
 enum PurchaseStatus {
@@ -18,6 +19,7 @@ class Purchase {
   User? purchaseOperator;
   User? supplier;
   List<Product>? products;
+  Vat? vat;
 
   Purchase({
     this.id,
@@ -27,6 +29,7 @@ class Purchase {
     this.supplier,
     this.products,
     this.folio,
+    this.vat,
   });
 
   Purchase copyWith({
@@ -37,6 +40,7 @@ class Purchase {
     User? supplier,
     List<Product>? products,
     String? folio,
+    Vat? vat,
   }) =>
       Purchase(
         id: id ?? this.id,
@@ -46,6 +50,7 @@ class Purchase {
         supplier: supplier ?? this.supplier,
         products: products ?? this.products,
         folio: folio ?? this.folio,
+        vat: vat ?? this.vat,
       );
 
   factory Purchase.fromJson(Map<String, dynamic> json) => Purchase(
@@ -61,6 +66,7 @@ class Purchase {
                 (e) => e.name == json["status"],
                 orElse: () => PurchaseStatus.pending,
               ),
+        vat: json["vat"] == null ? null : Vat.fromJson(json["vat"]),
         products: json["products"] == null
             ? []
             : List<Product>.from(
@@ -79,21 +85,26 @@ class Purchase {
           "products": products == null
               ? []
               : List<dynamic>.from(products!.map((x) => x.toProductSale())),
+        "vat": vat?.toJson(),
       };
 
-  Map<String, dynamic> toDataTable() => {
-        "date": date?.dateAndHour24ToString ?? '-',
-        "status": status?.type ?? '',
-        "operator": purchaseOperator?.toString() ?? '-',
-        "supplier": supplier?.toString() ?? '-',
-        "folio": folio ?? "",
-        "total": '\$${_getSubTotal()}',
-        "products": products == null
-            ? []
-            : List<dynamic>.from(products!.map((x) => x.toProductSale())),
-      };
+  Map<String, dynamic> toDataTable() {
+    final totals = _getTotals();
+    return {
+      "date": date?.dateAndHour24ToString ?? '-',
+      "status": status?.type ?? '',
+      "operator": purchaseOperator?.toString() ?? '-',
+      "supplier": supplier?.toString() ?? '-',
+      "folio": folio ?? "",
+      "vat": '${vat?.toString() ?? '-'} (\$${totals.$2})',
+      "total": '\$${totals.$1}',
+      "products": products == null
+          ? []
+          : List<dynamic>.from(products!.map((x) => x.toProductSale())),
+    };
+  }
 
-  double _getSubTotal() {
+  (double, double) _getTotals() {
     double subtotal = 0.0;
 
     for (var product in (products ?? <Product>[])) {
@@ -101,6 +112,15 @@ class Purchase {
       subtotal = subtotal + total;
     }
 
-    return subtotal;
+    final iva = _getIva(subtotal);
+
+    return (subtotal + iva, iva);
+  }
+
+  double _getIva(double subtotal) {
+    double ivaTem = (vat?.vat ?? 0.0) / 100;
+    double totalIva = subtotal * ivaTem;
+
+    return double.parse(totalIva.toStringAsFixed(2));
   }
 }

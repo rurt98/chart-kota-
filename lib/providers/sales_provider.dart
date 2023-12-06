@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_data_table/custom_data_table.dart';
+import 'package:final_project_ba_char/models/product.dart';
 import 'package:final_project_ba_char/models/sale.dart';
 import 'package:final_project_ba_char/models/vat.dart';
 
