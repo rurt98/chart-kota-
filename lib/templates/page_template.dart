@@ -139,7 +139,7 @@ class _PageTemplateState extends State<PageTemplate> {
 
   Widget footer() {
     return Text(
-      '2023 Crewip     Todos los derechos reservados  v1.0.0',
+      '2023 Crewip     Todos los derechos reservados  v1.0.2',
       style: Theme.of(context).textTheme.labelMedium!.copyWith(
             color: Colors.grey,
           ),
