@@ -1,16 +1,25 @@
-# final_project_ba_char
+# Chart-Kota
 
-A new Flutter project.
+**Chart-Kota** es una aplicación básica desarrollada con Flutter y Firebase para gestionar una veterinaria. Este proyecto fue creado como trabajo final para la clase de Desarrollo de Software y cumple con los requisitos establecidos para la gestión de datos de una veterinaria.
 
-## Getting Started
+## Gestión que ofrece Chat-kota
 
-This project is a starting point for a Flutter application.
+- **Ventas**
+- **Citas**
+- **Compras**
+- **Pacientes**
+- **Propietarios**
+- **Devoluciones**
+- **Usuarios**
+- **Productos**
+- **Provedores**
 
-A few resources to get you started if this is your first Flutter project:
+## Tecnologías Utilizadas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter**: Framework para el desarrollo de la interfaz de usuario de la aplicación.
+- **Firebase**: Plataforma para la autenticación de usuarios, almacenamiento de datos y base de datos en tiempo real.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot 2024-09-12 at 5 30 12 PM](https://github.com/user-attachments/assets/0a8fddeb-6e86-4e19-9af1-e709c7ee4f10)
+
+
+![Screenshot 2024-09-12 at 5 30 28 PM](https://github.com/user-attachments/assets/0823ce4c-411c-447c-bc24-abc568cd5b0c)
